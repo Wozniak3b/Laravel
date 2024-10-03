@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/messages',[ChatControl::class,'fetch_messages'])->middleware('auth');
-Route::post('/messages',[ChatControl::class,'send_messages'])->middleware('auth');
+Route::get('/messages',[ChatControl::class,'fetch_message'])->middleware('auth');
+Route::post('/messages',[ChatControl::class,'send_message'])->middleware('auth');
 
 require __DIR__.'/auth.php';
