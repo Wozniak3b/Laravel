@@ -8,6 +8,10 @@
     $message=isset($_POST['message']) ? $_POST['message'] : null;
     $name=isset($_POST['name']) ? $_POST['name'] : null;
 
+    echo json_encode($message);
+    echo json_encode($name);
+
+    //Adding items to database
     if(!empty($message) && !empty($name)){
         $query="INSERT INTO `chat` (`message`,`user_name`) VALUES ('".$message."','".$name."')";
         $result=mysqli_query($database,$query);
