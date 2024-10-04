@@ -11,7 +11,9 @@
         var name=null, start=0;
         $(document).ready(function(){
             name=prompt("Insert your name/nickname");
+            load();
             $('form').submit(function(e){
+                
                 e.preventDefault();
                 $.ajax({
                     url:"http://localhost/chatcontrol.php",
@@ -25,9 +27,26 @@
                     }
                     });
                 $('#message').val('');
-                return false;
+                //return false;
             })
-        })
+        });
+
+        function load(){
+            $.get("http://localhost/chatcontrol.php" + '?start'+start,function(result){
+                if(result.receive){
+                    result.receive.forEach(item=>{
+                        start=item.id;
+                        $('#messages').append(render(item));
+                    })
+                };
+            });
+            setTimeout(load(),2000);
+        }
+
+        function render(item){
+            return `<aside><p>${item.user_name}</p>${item.message}</aside>`;
+        }
+        
     </script>
     <title>Simple PHP Chat</title>
     

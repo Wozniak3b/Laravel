@@ -8,15 +8,20 @@
     $message=isset($_POST['message']) ? $_POST['message'] : null;
     $name=isset($_POST['name']) ? $_POST['name'] : null;
 
-    echo json_encode($message);
-    echo json_encode($name);
-
     //Adding items to database
     if(!empty($message) && !empty($name)){
         $query="INSERT INTO `chat` (`message`,`user_name`) VALUES ('".$message."','".$name."')";
         $result=mysqli_query($database,$query);
     }
 
+    //Printing from db
+    $start=isset($_GET['start']) ? intval($_GET['start']) : 0;
+    //To print all messages
+    $receive=mysqli_query($database,"SELECT * FROM `chat` WHERE `id` > ".$start);
+    while($row=$receive->fetch_assoc()){
+        $result['receive'][]=$row;
+    }
+    
     mysqli_close($database);
     
     header('Access-Control-Allow-Origin: *');
