@@ -8,6 +8,10 @@ use App\Models\Messages;
 
 class ChatControl extends Controller
 {
+    public function fetch_message(){
+        return Messages::with('user')->get();
+    }
+
     public function send_message(Request $request){
         $message=Messages::create([
             'user_id'=>Auth::id(),
@@ -17,7 +21,4 @@ class ChatControl extends Controller
         return $message->load('user');
     }
 
-    public function fetch_message(Request $request){
-        return Messages::with('user')->get();
-    }
 }

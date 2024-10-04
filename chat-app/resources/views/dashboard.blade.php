@@ -19,43 +19,60 @@
                     <div id="app">
                         <h3>Simple Group Chat Room</h3>
                         <br>
-                        <article id="messages"></article>
                         <form id="mess-form">
                             <input type="text" id="mess_input" placeholder="Type your message" required>
-                            <button type="submit">Send!</button>
+                            <button type="submit" id="send">Send!</button>
                         </form>
-                    </div>
+                        <article id="messages"></article>
+                    
 
                     <script type="text/javascript">
                         $(document).ready(function(){
-                            fetch_message();
+                            //load();
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
 
-                            function fetch_message(){
-                                $.get('/messages',function(data){
-                                    //$('#messages').html('');
-                                    data.forEach(message=>{
-                                        $('#messages').append('<div class="message color="red"><strong>'+message.user.name+':</strong>'+message.message+'</div>'); 
-                                    });
-                                })
-                            }
-
-                            $('#message-form').on('submit',function(a){
+                            
+                            $('#mess-form').submit(function(a){
                                 a.preventDefault();
-                                var message=$('#message-input').val();
+                                var message=$('#mess-input').val();
+                                console.log();
 
-                                $.ajax({
+                                $.post({
                                     url:'/messages',
                                     type: 'POST',
-                                    data: {message:message},
+                                    data: {message},
                                     success: function(data) {
-                                        $('#message-input').val('');
-                                        $('#messages').append('<div class="message color="red"><strong>'+data.user.name+':</strong>'+data.message+'</div>');
-                                        $('#messages').text(data.message);                                    }
+                                        $('#mess-input').val('');
+                                        $('#messages').append('<div class="message" color="red"><strong>'+data.user.name+':</strong>'+data.message+'</div>');
+                                        $('#messages').text(data.message);                                    
+                                    }
                                 });
                             });
 
+                            function load(){
+                                $.get('/messages',function(data){
+                                    if(data.message){
+                                        data.message.forEach(message=>{
+                                            $('#messages').append(render_mess(message))
+                                        })
+                                    }
+                                    load();
+                                });   
+                            }
+
+                            function render_mess(n){
+                                console.log(n);
+                                //return '<div class="msg"><p>$(n.user.name)</p>$(n.message)</div>';
+                            }
+
                         });
                     </script>
+
+                    </div>
                 </div>
             </div>
         </div>
